@@ -5,7 +5,6 @@ from google import genai
 from google.genai import types
 from pydantic import BaseModel
 from dotenv import load_dotenv
-from mangum import Mangum
 
 load_dotenv()
 
@@ -48,6 +47,3 @@ def submit_prompt(request: PromptRequest):
     except Exception as e:
         print(f"Backend Error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
-
-# This handler is required for Vercel serverless functions to route requests to FastAPI
-handler = Mangum(app)
