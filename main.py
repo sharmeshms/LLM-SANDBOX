@@ -5,6 +5,7 @@ from google import genai
 from google.genai import types
 from pydantic import BaseModel
 from dotenv import load_dotenv
+from mangum import Mangum
 
 load_dotenv()
 
@@ -37,7 +38,7 @@ def submit_prompt(request: PromptRequest):
     
     try:
         response = client.models.generate_content(
-            model="gemini-2.5-flash",  # Updated to a valid supported model name
+            model="gemini-2.5-flash",
             contents=request.prompt,
             config=types.GenerateContentConfig(
                 system_instruction=SYSTEM_INSTRUCTION
@@ -47,3 +48,6 @@ def submit_prompt(request: PromptRequest):
     except Exception as e:
         print(f"Backend Error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+# This handler is required for Vercel serverless functions to route requests to FastAPI
+handler = Mangum(app)
