@@ -13,6 +13,20 @@ function App() {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  // Update system time
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('en-US', { hour12: false });
+      const timeEl = document.getElementById('time');
+      if (timeEl) timeEl.textContent = `SYS: ${timeStr}`;
+    };
+    
+    updateTime();
+    const interval = setInterval(updateTime, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   const sendPrompt = async () => {
     if (!input.trim() || loading) return;
 
@@ -39,11 +53,24 @@ function App() {
   };
 
   return (
-    <div className="glass-card">
-      <div className="header">
-        <h2>GDG CYBER VAULT</h2>
-        <p>Level 1: Prompt Injection Sandbox</p>
+    <div className="container">
+      <div className="tech-header">
+        <div className="tech-line top-left"></div>
+        <div className="tech-line top-right"></div>
+        <h1 className="tech-title">⟨ NEXUS ⟩</h1>
+        <p className="tech-subtitle">AI SECURITY PROTOCOL v2.0</p>
+        <div className="status-bar">
+          <span className="status-indicator">● ONLINE</span>
+          <span className="status-time" id="time">SYS: 00:00:00</span>
+        </div>
       </div>
+      
+      <div className="glass-card">
+        <div className="header">
+          <div className="header-accent"></div>
+          <h2>🔐 CYBER VAULT</h2>
+          <p className="level-text">⚡ Level 1: Prompt Injection Sandbox</p>
+        </div>
 
       <div className="chat-display">
         {messages.map((msg, idx) => (
