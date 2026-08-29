@@ -94,8 +94,11 @@ function App() {
           {loading ? '...' : 'INJECT'}
         </button>
       </div>
+      </div>
     </div>
   );
 }
+
+export default App;
 
 export default App;
