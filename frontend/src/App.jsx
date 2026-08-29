@@ -19,7 +19,7 @@ function App() {
       const now = new Date();
       const timeStr = now.toLocaleTimeString('en-US', { hour12: false });
       const timeEl = document.getElementById('time');
-      if (timeEl) timeEl.textContent = `SYS: ${timeStr}`;
+      if (timeEl) timeEl.textContent = timeStr;
     };
     
     updateTime();
@@ -37,7 +37,8 @@ function App() {
     setLoading(true);
 
     try {
-      const res = await fetch('https://llm-sandbox-lgpk.onrender.com/api/chat', {
+      const apiHost = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? '' : 'https://llm-sandbox-lgpk.onrender.com');
+      const res = await fetch(`${apiHost}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt: userText })
@@ -53,47 +54,90 @@ function App() {
   };
 
   return (
-    <div className="container">
-      <div className="tech-header">
-        <div className="tech-line top-left"></div>
-        <div className="tech-line top-right"></div>
-        <h1 className="tech-title">⟨ NEXUS ⟩</h1>
-        <p className="tech-subtitle">AI SECURITY PROTOCOL v2.0</p>
-        <div className="status-bar">
-          <span className="status-indicator">● ONLINE</span>
-          <span className="status-time" id="time">SYS: 00:00:00</span>
-        </div>
-      </div>
-      
-      <div className="glass-card">
-        <div className="header">
-          <div className="header-accent"></div>
-          <h2>🔐 CYBER VAULT</h2>
-          <p className="level-text">⚡ Level 1: Prompt Injection Sandbox</p>
-        </div>
-
-      <div className="chat-display">
-        {messages.map((msg, idx) => (
-          <div key={idx} className={`message ${msg.sender === 'user' ? 'user-msg' : 'bot-msg'}`}>
-            {msg.text}
+    <div className="wrapper">
+      {/* TOP BRANDING BAR */}
+      <div className="branding-bar">
+        <div className="branding-content">
+          <div className="branding-left">
+            <h1 className="brand-title">
+              <span className="brand-tech">TECHNO</span>
+              <span className="brand-vit">VIT</span>
+            </h1>
+            <p className="brand-subtitle">×</p>
+            <h2 className="brand-gdg">GDG</h2>
           </div>
-        ))}
-        {loading && <div className="message bot-msg typing">Processing...</div>}
-        <div ref={chatEndRef} />
+          <div className="branding-right">
+            <div className="status-pill">
+              <span className="status-dot">●</span>
+              <span>SYSTEM ACTIVE</span>
+            </div>
+            <div className="time-display" id="time">00:00:00</div>
+          </div>
+        </div>
+        <div className="branding-line"></div>
       </div>
 
-      <div className="input-area">
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && sendPrompt()}
-          placeholder="Execute override command..."
-        />
-        <button onClick={sendPrompt} disabled={loading}>
-          {loading ? '...' : 'INJECT'}
-        </button>
-      </div>
+      {/* MAIN CONTAINER */}
+      <div className="main-container">
+        <div className="glass-card">
+          {/* HEADER */}
+          <div className="card-header">
+            <div className="header-top">
+              <h2 className="vault-title">🔐 CYBER VAULT</h2>
+              <div className="header-accent-line"></div>
+            </div>
+            <p className="vault-subtitle">Level 1: Prompt Injection Sandbox</p>
+            <div className="header-divider"></div>
+          </div>
+
+          {/* CHAT DISPLAY */}
+          <div className="chat-display">
+            {messages.map((msg, idx) => (
+              <div key={idx} className={`message message-${msg.sender}`}>
+                <div className="message-wrapper">
+                  <span className="message-prefix">{msg.sender === 'user' ? '▶ ' : '◀ '}</span>
+                  <span className="message-text">{msg.text}</span>
+                </div>
+              </div>
+            ))}
+            {loading && (
+              <div className="message message-bot">
+                <div className="message-wrapper">
+                  <span className="message-prefix">◀ </span>
+                  <span className="message-text typing">Processing...</span>
+                </div>
+              </div>
+            )}
+            <div ref={chatEndRef} />
+          </div>
+
+          {/* INPUT AREA */}
+          <div className="input-section">
+            <div className="input-wrapper">
+              <input
+                type="text"
+                className="command-input"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && sendPrompt()}
+                placeholder="Enter command..."
+                spellCheck="false"
+              />
+              <button 
+                className="inject-btn" 
+                onClick={sendPrompt} 
+                disabled={loading}
+              >
+                {loading ? 'EXECUTING...' : '⚡ INJECT'}
+              </button>
+            </div>
+          </div>
+
+          {/* FOOTER */}
+          <div className="card-footer">
+            <p className="footer-text">AI SECURITY PROTOCOL v2.0 | GEMINI-POWERED</p>
+          </div>
+        </div>
       </div>
     </div>
   );
