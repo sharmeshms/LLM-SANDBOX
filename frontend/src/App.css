@@ -578,7 +578,6 @@ button {
   transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(100, 181, 246, 0.25);
 }
-}
 
 button:hover {
   background: #7dd3fc;
